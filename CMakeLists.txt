@@ -1,41 +1,46 @@
 cmake_minimum_required(VERSION 3.16)
 
-
-# set the output directory for built objects.
-# This makes sure that the dynamic library goes into the build directory automatically.
+# Set the output directories for binaries and libraries
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
 set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}" CACHE INTERNAL "")
 
+# Project setup
 project(TowerDefense)
-set(EXECUTABLE_NAME ${PROJECT_NAME})# Executable name set to project name
+set(EXECUTABLE_NAME ${PROJECT_NAME})
 
-target_sources(${EXECUTABLE_NAME} 
-PRIVATE 
+# Add source files
+add_executable(${EXECUTABLE_NAME}
     src/main.cpp
 )
 
-# Call's SDL CMake File
+# SDL Core
 add_subdirectory(SDL EXCLUDE_FROM_ALL)
 
-#SDL_ttf
-set(SDLTTF_VENDORED ON)
+# SDL_ttf
+set(SDLTTF_VENDORED OFF)
 add_subdirectory(SDL_ttf EXCLUDE_FROM_ALL)
 
-#SDL_mixer
-set(SDLMIXER_VENDORED ON)
+# SDL_mixer
+set(SDLMIXER_VENDORED OFF)
 add_subdirectory(SDL_mixer EXCLUDE_FROM_ALL)
 
-#SDL_image
-set(SDLIMAGE_VENDORED ON)
+# SDL_image
+set(SDLIMAGE_VENDORED OFF)
+add_subdirectory(SDL_image EXCLUDE_FROM_ALL)
 
-# Create your game executable target as usual
-add_executable(${PROJECT_NAME} main.c)
+# Link all SDL libraries
+target_link_libraries(${EXECUTABLE_NAME}
+    PRIVATE
+        SDL3::SDL3
+        SDL3_ttf::SDL3_ttf
+        SDL3_mixer::SDL3_mixer
+        SDL3_image::SDL3_image
+)
 
-# Link to the actual SDL3 library.
-target_link_libraries(${EXECUTABLE_NAME} PUBLIC 
-	SDL3_ttf::SDL3_ttf      
-	SDL3_mixer::SDL3_mixer  
-	SDL3_image::SDL3_image	
-    SDL3::SDL3             
+target_include_directories(${EXECUTABLE_NAME} PRIVATE
+    ${CMAKE_SOURCE_DIR}/SDL/include
+    ${CMAKE_SOURCE_DIR}/SDL_image/include
+    ${CMAKE_SOURCE_DIR}/SDL_ttf/include
+    ${CMAKE_SOURCE_DIR}/SDL_mixer/include
 )
