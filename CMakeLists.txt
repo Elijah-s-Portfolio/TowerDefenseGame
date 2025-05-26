@@ -12,6 +12,7 @@ set(EXECUTABLE_NAME ${PROJECT_NAME})
 # Add source files
 add_executable(${EXECUTABLE_NAME}
     src/main.cpp
+    src/Graphics/GraphicsSystem.cpp
 )
 
 # SDL Core
